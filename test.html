@@ -1,0 +1,87 @@
+<!DOCTYPE>
+<html>
+	<head>
+		<meta charset="utf8">
+		<script   src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+	</head>
+	<body>
+
+		<!-- navbar -->
+		<nav class="navbar navbar-default">
+		  <div class="container-fluid">
+		    <div class="navbar-header">
+		      <a class="navbar-brand" href="#">
+		        <img alt="Brand" src="http://www.linnmarsoccer.com/wp-content/uploads/2014/11/instagram-logo-png-small.png"/>
+		      </a>
+		    </div>		    
+		  </div>
+		</nav>
+		<h1>化學科小幫手</h1>
+		<script>
+			var items = [];
+			var tags=[];
+			var Questions=[];
+			var tagsNumber=0;
+
+			//讀取data.json並且使用each讓所有的Question列出，並且把每個button標記
+			$.getJSON( "./data.json", function( data ) {
+			 
+			  $.each( data, function( key, val ) {
+			    items.push( "<li id='" + key + "'>" +val.Question + "</li>"+"<button class='btn btn-primary' onclick='btn("+key+")' id='" + key + "'>"+"其他類似題"+"</button>" );
+			    tags.push(val.tag);
+			    Questions.push(val.Question);
+			  });
+			  //如要加上題目下方讓人看到tag:請在上方push內加入："<br>"+ val.tag
+			  tagsNumber=tags.length;
+			 
+			  $( "<ul/>", {
+			    "class": "my-new-list",
+			    html: items.join( "" )
+			  }).appendTo( "body" );
+
+
+
+			});
+
+
+			//為了比較兩個矩陣的相關性
+			function intersect_safe(a, b){
+			  var ai=0, bi=0;
+			  var result = [];
+
+			  while( ai < a.length && bi < b.length ){
+			     if (a[ai] < b[bi])
+			     	{ ai++; }
+			     else if (a[ai] > b[bi] )
+			     	{ bi++; }
+			     else /* they're equal */
+			     {
+			       result.push(a[ai]);
+			       ai++;
+			       bi++;
+			     }
+			  }
+			  return result;
+			};
+
+			//按下button後，把那題跟所有題目比較相關性，如非無相關性，及列出（console.log&alert）
+			function btn(key){
+				console.log(key);
+				for (i=0;i<tagsNumber;i++){
+					if (i!==key){
+						var similarity=intersect_safe(tags[key],tags[i]);
+					 	if (typeof similarity !== 'undefined' && similarity.length >0) {
+					 		console.log(Questions[i]);
+					 		alert(Questions[i]);
+					 		console.log(similarity);
+					 	 }
+					}
+				}
+			}
+
+
+		</script>
+
+	</body>
+</html>
